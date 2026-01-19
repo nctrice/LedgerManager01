@@ -24,7 +24,7 @@ main { padding: 1rem; max-width: 900px; margin: 0 auto; }
 .row.wrap { align-items:center; }
 label { display:flex; flex-direction:column; gap:.25rem; font-size:.9rem; }
 input, select, button { background:#0b1220; color:var(--text); border:1px solid #1f2937; border-radius:8px; padding:.5rem .6rem; }
-input[type=\"date\"], input[type=\"number\"], input[type=\"text\"], select { min-width: 140px; }
+input[type="date"], input[type="number"], input[type="text"], select { min-width: 140px; }
 button.primary { background:#065f46; border-color:#0f766e; }
 button.outline { background:#0b1220; border-color:#334155; }
 button.danger { background:#3f0b0b; border-color:#7f1d1d; }
