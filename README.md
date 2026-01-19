@@ -1,5 +1,7 @@
-# Ledger PWA (Reordered Tabs)
+# Ledger PWA (Payments Totals in Payments Tab)
 
-This build sets tab order to: **Dashboard, Payments, Receivables, Stock** while still launching on **Payments** (default view on load/refresh).
+- Tab order: **Dashboard, Payments, Receivables, Stock**
+- On launch/refresh: **Payments** tab opens.
+- **New**: Payments tab now shows **Total Credits**, **Total Debits**, and **Balance (Debit − Credit)** for the selected ledger (or for **All** if you filter by All). Values update on add/delete and on filter change.
 
-See README in previous build for details. Deploy the same way via GitHub Pages.
+Re-deploy the same way via GitHub Pages.

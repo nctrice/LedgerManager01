@@ -24,7 +24,7 @@ main { padding: 1rem; max-width: 900px; margin: 0 auto; }
 .row.wrap { align-items:center; }
 label { display:flex; flex-direction:column; gap:.25rem; font-size:.9rem; }
 input, select, button { background:#0b1220; color:var(--text); border:1px solid #1f2937; border-radius:8px; padding:.5rem .6rem; }
-input[type=\"date\"], input[type=\"number\"], input[type=\"text\"], select { min-width: 140px; }
+input[type="date"], input[type="number"], input[type="text"], select { min-width: 140px; }
 button.primary { background:#065f46; border-color:#0f766e; }
 button.outline { background:#0b1220; border-color:#334155; }
 button.danger { background:#3f0b0b; border-color:#7f1d1d; }
@@ -37,13 +37,11 @@ button.danger { background:#3f0b0b; border-color:#7f1d1d; }
 .pill { background:var(--pill); border:1px solid #1f2937; padding:.25rem .5rem; border-radius:999px; font-size:.85rem; }
 .pill.red { background:#3b0a0a; border-color:#7f1d1d; }
 .pill.green { background:#063e2a; border-color:#0f5132; }
-.stats { display:grid; grid-template-columns: repeat(2, 1fr); gap:.75rem; }
+.stats { display:grid; grid-template-columns: repeat(2, 1fr); gap:.75rem; margin:.5rem 0; }
 .stat { background:#0b1220; border:1px solid #1f2937; border-radius:10px; padding:.75rem; }
 .stat .label { color: var(--muted); font-size:.85rem; }
 .stat .value { font-weight:700; font-size:1.1rem; margin-top:.25rem; }
 .worth { background: #6b7280; color:#fff; font-size: 1.6rem; font-weight: 800; padding: .8rem 1rem; border-radius: 12px; text-align:center; }
 .app-footer { text-align:center; padding:1rem; color:var(--muted); }
 .small { color: var(--muted); }
-@media (min-width: 800px){
-  .stats { grid-template-columns: repeat(4, 1fr); }
-}
+@media (min-width: 800px){ .stats { grid-template-columns: repeat(4, 1fr); } }

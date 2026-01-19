@@ -78,6 +78,9 @@ const Store = (() => {
       return arr;
     },
     paymentsTotals: (ledger) => {
+      if(ledger==='All' || !ledger){
+        let credits=0, debits=0; for(const p of state.payments){ if(p.type==='credit') credits+=Number(p.amount||0); else debits+=Number(p.amount||0);} return {credits,debits};
+      }
       const arr = state.payments.filter(p=>p.ledger===ledger);
       let credits=0, debits=0; for(const p of arr){ if(p.type==='credit') credits+=Number(p.amount||0); else debits+=Number(p.amount||0); }
       return { credits, debits };
