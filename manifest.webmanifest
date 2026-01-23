@@ -1,5 +1,5 @@
 {
-  "name": "Ledger PWA",
+  "name": "Ledger Manager",
   "short_name": "Ledger",
   "start_url": "./",
   "display": "standalone",
