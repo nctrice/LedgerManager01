@@ -106,6 +106,7 @@
     <!-- RECEIVABLES TAB -->
     <section id="receivables" class="tab-panel" aria-labelledby="Receivables">
       <h2>Receivables</h2>
+
       <div class="card">
         <h3>Add Receivable</h3>
         <div class="row">
@@ -172,6 +173,7 @@
     <!-- STOCK TAB -->
     <section id="stock" class="tab-panel" aria-labelledby="Stock">
       <h2>Stock</h2>
+
       <div class="card">
         <div class="row wrap">
           <label>Ledger
@@ -190,6 +192,7 @@
         </div>
         <small>Prices can be changed when necessary. Quantities are per selected ledger.</small>
       </div>
+
       <div class="card">
         <div class="row wrap">
           <h3 style="margin-right:auto">Stock List</h3>
@@ -220,6 +223,17 @@
         </div>
       </div>
 
+      <div class="card">
+        <h3>Business Profit/Loss</h3>
+        <div id="business-worth" class="worth">₦0.00</div>
+        <p class="help">Business Profit/Loss = (Total Credits + Total Receivables + Total Stock Value) − Total Debits</p>
+        <ul>
+          <li><span class="pill green"></span> Green if &gt; 0</li>
+          <li><span class="pill red"></span> Red if &lt; 0</li>
+          <li>Grey if = 0</li>
+        </ul>
+      </div>
+
       <div class="card" id="data-mgmt">
         <h3>Data Management</h3>
         <p class="small">Backup/restore JSON, universal CSV import/export, and Excel (multi‑tab) export.</p>
@@ -233,17 +247,6 @@
         <input id="file-import-backup" type="file" accept="application/json,.json" class="hidden" />
         <input id="file-import-csv" type="file" accept="text/csv,.csv" class="hidden" />
         <p class="small">CSV columns: type,id,createdAt,ledger,date,amount,paymentType,name,invoiceType,invoiceNumber,customer,comment,stockProduct,stockPrice,stockQty</p>
-      </div>
-
-      <div class="card">
-        <h3>Business Profit/Loss</h3>
-        <div id="business-worth" class="worth">₦0.00</div>
-        <p class="help">Business Profit/Loss = (Total Credits + Total Receivables + Total Stock Value) − Total Debits</p>
-        <ul>
-          <li><span class="pill green"></span> Green if &gt; 0</li>
-          <li><span class="pill red"></span> Red if &lt; 0</li>
-          <li>Grey if = 0</li>
-        </ul>
       </div>
     </section>
   </main>

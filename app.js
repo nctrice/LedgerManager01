@@ -2,10 +2,8 @@
   function $(id){ return document.getElementById(id); }
   function on(el,evt,cb){ if(el) el.addEventListener(evt,cb); }
   function escCSV(v){ return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'; }
-
   function init(){
     try{ if('serviceWorker' in navigator){ window.addEventListener('load', function(){ navigator.serviceWorker.register('./service-worker.js'); }); } }catch(_){ }
-
     var tabButtons=document.querySelectorAll('.tab-btn'); var panels=document.querySelectorAll('.tab-panel');
     function showTab(name){ for(var i=0;i<tabButtons.length;i++){ var b=tabButtons[i]; var a=(b.getAttribute('data-tab')===name); if(a) b.classList.add('active'); else b.classList.remove('active'); b.setAttribute('aria-selected', a?'true':'false'); } for(var j=0;j<panels.length;j++){ var p=panels[j]; if(p.id===name) p.classList.add('active'); else p.classList.remove('active'); } }
     for(var t=0;t<tabButtons.length;t++){ (function(btn){ on(btn,'click', function(){ showTab(btn.getAttribute('data-tab')); }); })(tabButtons[t]); }
@@ -13,13 +11,13 @@
 
     var ledgerSelects={ payment:$('#payment-ledger'), paymentsFilter:$('#payments-filter-ledger'), recv:$('#recv-ledger'), recvFilter:$('#recv-filter-ledger'), stock:$('#stock-ledger'), dashboard:$('#dash-ledger') };
 
-    function refreshLedgers(){ var ledgers=Store.getLedgers(); for(var key in ledgerSelects){ var sel=ledgerSelects[key]; if(!sel) continue; var cur=sel.value; sel.innerHTML=''; if(sel===ledgerSelects.paymentsFilter || sel===ledgerSelects.recvFilter){ var optAll=document.createElement('option'); optAll.value='All'; optAll.textContent='All'; sel.appendChild(optAll); }
+    function refreshLedgers(){ var ledgers=(Store.getLedgers&&Store.getLedgers())||[]; for(var key in ledgerSelects){ var sel=ledgerSelects[key]; if(!sel) continue; var cur=sel.value; sel.innerHTML=''; if(sel===ledgerSelects.paymentsFilter || sel===ledgerSelects.recvFilter){ var optAll=document.createElement('option'); optAll.value='All'; optAll.textContent='All'; sel.appendChild(optAll); }
         for(var i=0;i<ledgers.length;i++){ var o=document.createElement('option'); o.value=ledgers[i]; o.textContent=ledgers[i]; sel.appendChild(o); }
         if(cur && Array.prototype.some.call(sel.options, function(o){return o.value===cur;})) sel.value=cur; }
       var list=$('#ledger-list'); if(list){ list.innerHTML=''; for(var i2=0;i2<ledgers.length;i2++){ var s=document.createElement('span'); s.className='pill'; s.textContent=ledgers[i2]; list.appendChild(s);} }
     }
 
-    on($('#add-ledger-btn'),'click', function(){ var name=$('#new-ledger-name')?$('#new-ledger-name').value:''; var res=Store.addLedger(name); if(!res.ok){ alert(res.msg); return;} if($('#new-ledger-name')) $('#new-ledger-name').value=''; refreshLedgers(); refreshDashboard(); refreshPaymentsTable(); refreshReceivables(); refreshStockTable(); });
+    on($('#add-ledger-btn'),'click', function(){ var input=$('#new-ledger-name'); var name=input?input.value:''; var res=Store.addLedger(name); if(!res.ok){ alert(res.msg); return;} if(input) input.value=''; refreshLedgers(); refreshDashboard(); refreshPaymentsTable(); refreshReceivables(); refreshStockTable(); });
 
     refreshLedgers();
 
@@ -37,8 +35,7 @@
       var bal=totalDebits-totalCredits; var elC=$('#payments-total-credits'), elD=$('#payments-total-debits'), elB=$('#payments-balance'); if(elC) elC.textContent=naira(totalCredits); if(elD) elD.textContent=naira(totalDebits); if(elB){ elB.textContent=naira(bal); }
     }
 
-    on($('#export-ledger-csv'),'click', function(){ var ledger=(paymentsFilter && (paymentsFilter.value==='All' || !paymentsFilter.value))?(ledgerSelects.payment?ledgerSelects.payment.value:''):(paymentsFilter?paymentsFilter.value:''); if(!ledger){ alert('Select a ledger to export'); return;} var rows=Store.listPayments(ledger); var header=['Date','Type','Payment Name/Invoice Type','Payment Type/Invoice #','Ledger','Amount']; var lines=[header.join(',')]; for(var i=0;i<rows.length;i++){ var r=rows[i]; if(r.type==='credit') lines.push([r.date,'Credit',(r.name||''),(r.paymentType||''),r.ledger,r.amount].map(escCSV).join(',')); else lines.push([r.date,'Debit',(r.invoiceType||''),(r.invoiceNumber||''),r.ledger,r.amount].map(escCSV).join(',')); } var blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8;'}); var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download='ledger_'+ledger+'_statement.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); });
-
+    // Receivables
     var RECV_PAGE_SIZE=10; var recvPage=1;
     on($('#add-recv-btn'),'click', function(){ var sel=ledgerSelects.recv; var ledger=sel?sel.value:''; var dateEl=$('#recv-date'); var date=(dateEl&&dateEl.value)?dateEl.value:new Date().toISOString().slice(0,10); var custEl=$('#recv-customer'); var customer=custEl?custEl.value.trim():''; var invEl=$('#recv-invnum'); var invoiceNumber=invEl?invEl.value.trim():''; var amtEl=$('#recv-amount'); var amount=Number(amtEl?amtEl.value:0); var comEl=$('#recv-comment'); var comment=comEl?comEl.value.trim():''; if(!ledger){ alert('Select a ledger'); return;} if(!customer){ alert('Enter customer'); return;} if(!amount){ alert('Enter amount'); return;} Store.addReceivable({date:date,customer:customer,invoiceNumber:invoiceNumber,amount:amount,comment:comment,ledger:ledger}); if(custEl) custEl.value=''; if(invEl) invEl.value=''; if(amtEl) amtEl.value=''; if(comEl) comEl.value=''; refreshReceivables(); refreshDashboard(); });
 
@@ -50,7 +47,8 @@
       refreshFavouriteSections();
     }
 
-    on($('#export-recv-csv'),'click', function(){ var sel=ledgerSelects.recvFilter; var ledger=(sel&&sel.value)?sel.value:'All'; var rows=Store.listReceivables(ledger); var header=['Date','Customer','Invoice #','Ledger','Amount','Comment']; var lines=[header.join(',')]; for(var i=0;i<rows.length;i++){ var r=rows[i]; lines.push([r.date,(r.customer||''),(r.invoiceNumber||''),r.ledger,r.amount,(r.comment||'')].map(escCSV).join(',')); } var blob=new Blob([lines.join('\n')],{type:'text/csv;charset=utf-8;'}); var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download='receivables_'+ledger+'.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); });
+    on($('#export-recv-csv'),'click', function(){ var sel=ledgerSelects.recvFilter; var ledger=(sel&&sel.value)?sel.value:'All'; var rows=Store.listReceivables(ledger); var header=['Date','Customer','Invoice #','Ledger','Amount','Comment']; var lines=[header.join(',')]; for(var i=0;i<rows.length;i++){ var r=rows[i]; lines.push([r.date,(r.customer||''),(r.invoiceNumber||''),r.ledger,r.amount,(r.comment||'')].map(escCSV).join(',')); } var blob=new Blob([lines.join('
+')],{type:'text/csv;charset=utf-8;'}); var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download='receivables_'+ledger+'.csv'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); });
 
     function renderFavourites(){ var favWrap=$('#fav-customers'); if(!favWrap) return; favWrap.innerHTML=''; var favs=Store.getFavourites(); for(var i=0;i<favs.length;i++){ (function(name){ var span=document.createElement('span'); span.className='pill'; span.textContent=name+' '; var btn=document.createElement('button'); btn.className='danger'; btn.textContent='×'; btn.style.marginLeft='.5rem'; on(btn,'click', function(){ Store.removeFavourite(name); renderFavourites(); refreshFavouriteSections(); }); span.appendChild(btn); favWrap.appendChild(span); })(favs[i]); }
     }
@@ -75,30 +73,29 @@
     function refreshStockTable(){ var sel=ledgerSelects.stock; var ledger=sel?sel.value:''; var items=ledger?Store.getStockForLedger(ledger):[]; var wrap=$('#stock-table'); if(!wrap) return; var html='<table><thead><tr><th>Product</th><th>Price (₦)</th><th>Qty</th><th>Value</th></tr></thead><tbody>'; for(var i=0;i<items.length;i++){ var it=items[i]; html+='<tr><td>'+it.name+'</td><td>'+naira(it.price)+'</td><td>'+it.qty+'</td><td>'+naira(it.value)+'</td></tr>'; } html+='</tbody></table>'; wrap.innerHTML=html; var total=items.reduce(function(s,x){return s+x.value;},0); var totEl=$('#stock-total'); if(totEl) totEl.textContent='Total Value: '+naira(total); refreshDashboard(); }
     on($('#add-stock-btn'),'click', function(){ var ledger=(ledgerSelects.stock?ledgerSelects.stock.value:''); var product=(productSelect?productSelect.value:''); var priceEl=$('#stock-price'); var qtyEl=$('#stock-qty'); var price=Number(priceEl?priceEl.value:0); var qty=Number(qtyEl?qtyEl.value:0); if(!ledger){ alert('Select a ledger'); return;} if(!product){ alert('Select a product'); return;} Store.setStock(ledger,product,price,qty); if(qtyEl) qtyEl.value=''; refreshStockTable(); });
 
-    // Dashboard with background color change
-    function refreshDashboard(){ var sel=ledgerSelects.dashboard; var ledger=(sel&&sel.value)?sel.value:(Store.getLedgers()[0]||''); var t=Store.paymentsTotals(ledger); var credits=t.credits, debits=t.debits; var recv=Store.receivablesTotal(ledger); var stock=Store.stockTotalValue(ledger); var profit=(credits+recv+stock)-debits; var elD=$('#stat-debits'), elC=$('#stat-credits'), elR=$('#stat-recv'), elS=$('#stat-stock'); if(elD) elD.textContent=naira(debits); if(elC) elC.textContent=naira(credits); if(elR) elR.textContent=naira(recv); if(elS) elS.textContent=naira(stock); var w=$('#business-worth'); if(w){ w.textContent=naira(profit); // Change BACKGROUND color (not text)
-        w.style.color='#ffffff';
-        if(profit>0){ w.style.background='#065f46'; } else if(profit<0){ w.style.background='#7f1d1d'; } else { w.style.background='#6b7280'; }
-      }
+    // Dashboard with BACKGROUND colour change for P/L
+    function refreshDashboard(){ var sel=ledgerSelects.dashboard; var ledger=(sel&&sel.value)?sel.value:(Store.getLedgers()[0]||''); var t=Store.paymentsTotals(ledger); var credits=t.credits, debits=t.debits; var recv=Store.receivablesTotal(ledger); var stock=Store.stockTotalValue(ledger); var profit=(credits+recv+stock)-debits; var elD=$('#stat-debits'), elC=$('#stat-credits'), elR=$('#stat-recv'), elS=$('#stat-stock'); if(elD) elD.textContent=naira(debits); if(elC) elC.textContent=naira(credits); if(elR) elR.textContent=naira(recv); if(elS) elS.textContent=naira(stock); var w=$('#business-worth'); if(w){ w.textContent=naira(profit); w.style.color='#ffffff'; if(profit>0){ w.style.background='#065f46'; } else if(profit<0){ w.style.background='#7f1d1d'; } else { w.style.background='#6b7280'; } }
     }
     on(ledgerSelects.dashboard,'change', refreshDashboard); on(ledgerSelects.stock,'change', refreshStockTable);
 
-    // Data Management: JSON backup/restore + CSV import/export
+    // Data Management: JSON backup/restore + CSV + Excel
     function download(name, text, type){ var blob=new Blob([text],{type:type}); var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); }
     var exportBackupBtn=$('#btn-export-backup'); var importBackupBtn=$('#btn-import-backup'); var exportAllCsvBtn=$('#btn-export-all-csv'); var importAllCsvBtn=$('#btn-import-all-csv'); var fileBackup=$('#file-import-backup'); var fileCsv=$('#file-import-csv');
-    on(exportBackupBtn,'click', function(){ var payload={ version:'v10', exportedAt:new Date().toISOString(), data:Store.exportState() }; download('ledger_backup.json', JSON.stringify(payload,null,2), 'application/json'); });
+    on(exportBackupBtn,'click', function(){ var payload={ version:'v11', exportedAt:new Date().toISOString(), data:Store.exportState() }; download('ledger_backup.json', JSON.stringify(payload,null,2), 'application/json'); });
     on(importBackupBtn,'click', function(){ if(fileBackup) fileBackup.click(); });
     on(fileBackup,'change', function(){ var f=(fileBackup&&fileBackup.files&&fileBackup.files[0])?fileBackup.files[0]:null; if(!f) return; var reader=new FileReader(); reader.onload=function(){ try{ var obj=JSON.parse(String(reader.result||'{}')); var data=(obj&&obj.data)?obj.data:obj; var res=Store.importState(data); if(!res.ok){ alert(res.msg||'Import failed'); return;} alert('Backup restored successfully'); location.reload(); }catch(e){ alert('Invalid JSON'); } }; reader.readAsText(f); fileBackup.value=''; });
 
     on(exportAllCsvBtn,'click', function(){ var header=['type','id','createdAt','ledger','date','amount','paymentType','name','invoiceType','invoiceNumber','customer','comment','stockProduct','stockPrice','stockQty']; var lines=[header.join(',')]; var pays=Store.listPayments('All'); for(var i=0;i<pays.length;i++){ var p=pays[i]; if(p.type==='credit') lines.push(['payment_credit', p.id||'', p.createdAt||'', p.ledger, p.date||'', p.amount||'', p.paymentType||'', p.name||'', '', '', '', '', '', '', ''].map(escCSV).join(',')); else lines.push(['payment_debit', p.id||'', p.createdAt||'', p.ledger, p.date||'', p.amount||'', '', '', p.invoiceType||'', p.invoiceNumber||'', '', '', '', '', ''].map(escCSV).join(',')); }
       var recs=Store.listReceivables('All'); for(var j=0;j<recs.length;j++){ var r=recs[j]; lines.push(['receivable', r.id||'', r.createdAt||'', r.ledger, r.date||'', r.amount||'', '', '', '', r.invoiceNumber||'', r.customer||'', r.comment||'', '', '', ''].map(escCSV).join(',')); }
       var ledgers=Store.getLedgers(); for(var l=0;l<ledgers.length;l++){ var ldg=ledgers[l]; var items=Store.getStockForLedger(ldg); for(var s=0;s<items.length;s++){ var it=items[s]; lines.push(['stock', '', '', ldg, '', '', '', '', '', '', '', '', it.name||'', it.price||0, it.qty||0].map(escCSV).join(',')); } }
-      download('ledger_all.csv', lines.join('\n'), 'text/csv;charset=utf-8;');
+      download('ledger_all.csv', lines.join('
+'), 'text/csv;charset=utf-8;');
     });
 
     on(importAllCsvBtn,'click', function(){ if(fileCsv) fileCsv.click(); });
-    on(fileCsv,'change', function(){ var f=(fileCsv&&fileCsv.files&&fileCsv.files[0])?fileCsv.files[0]:null; if(!f) return; var reader=new FileReader(); reader.onload=function(){ try{ var txt=String(reader.result||''); var rows=txt.split(/\r?\n/).filter(function(x){return x.trim().length>0;}); if(rows.length<2){ alert('CSV is empty'); return; } var header=rows[0].split(',').map(function(h){ return h.replace(/^\"|\"$/g,'').trim(); }); function idx(name){ return header.indexOf(name); } var I={ type:idx('type'), id:idx('id'), createdAt:idx('createdAt'), ledger:idx('ledger'), date:idx('date'), amount:idx('amount'), paymentType:idx('paymentType'), name:idx('name'), invoiceType:idx('invoiceType'), invoiceNumber:idx('invoiceNumber'), customer:idx('customer'), comment:idx('comment'), stockProduct:idx('stockProduct'), stockPrice:idx('stockPrice'), stockQty:idx('stockQty') };
-          function unq(s){ return String(s||'').replace(/^\"|\"$/g,'').replace(/\"\"/g,'\"'); }
+    on(fileCsv,'change', function(){ var f=(fileCsv&&fileCsv.files&&fileCsv.files[0])?fileCsv.files[0]:null; if(!f) return; var reader=new FileReader(); reader.onload=function(){ try{ var txt=String(reader.result||''); var rows=txt.split(/?
+/).filter(function(x){return x.trim().length>0;}); if(rows.length<2){ alert('CSV is empty'); return; } var header=rows[0].split(',').map(function(h){ return h.replace(/^"|"$/g,'').trim(); }); function idx(name){ return header.indexOf(name); } var I={ type:idx('type'), id:idx('id'), createdAt:idx('createdAt'), ledger:idx('ledger'), date:idx('date'), amount:idx('amount'), paymentType:idx('paymentType'), name:idx('name'), invoiceType:idx('invoiceType'), invoiceNumber:idx('invoiceNumber'), customer:idx('customer'), comment:idx('comment'), stockProduct:idx('stockProduct'), stockPrice:idx('stockPrice'), stockQty:idx('stockQty') };
+          function unq(s){ return String(s||'').replace(/^"|"$/g,'').replace(/""/g,'"'); }
           function toCells(line){ var out=[], cur='', q=false; for(var i=0;i<line.length;i++){ var ch=line[i]; if(ch==='"'){ if(q && line[i+1]==='"'){ cur+='"'; i++; } else { q=!q; } } else if(ch===',' && !q){ out.push(cur); cur=''; } else { cur+=ch; } } out.push(cur); return out; }
           var neededLedgers={}; for(var r=1;r<rows.length;r++){ var cells=toCells(rows[r]); var led=unq(cells[I.ledger]); if(led) neededLedgers[led]=true; }
           var currentLedgers=Store.getLedgers(); for(var led in neededLedgers){ if(currentLedgers.indexOf(led)===-1){ Store.addLedger(led); } }
@@ -117,7 +114,7 @@
       fileCsv.value='';
     });
 
-    // Excel multi-tab export for active dashboard ledger
+    // Export Excel (multi-tab)
     on($('#btn-export-excel'),'click', function(){ var dashSel=ledgerSelects.dashboard; var activeLedger=(dashSel && dashSel.value)?dashSel.value:((Store.getLedgers()[0])||''); var pays=Store.listPayments(activeLedger); var recs=Store.listReceivables(activeLedger); var stock=Store.getStockForLedger(activeLedger);
       function xEsc(s){ return String(s==null?'':s).replace(/[<&>]/g, function(c){ return c==='<'?'&lt;':(c==='>'?'&gt;':'&amp;'); }); }
       function cell(v,t){ var typ=t||'String'; var val=(v==null?'':v); return '<Cell><Data ss:Type="'+typ+'">'+xEsc(val)+'</Data></Cell>'; }
@@ -129,14 +126,15 @@
       var recRows=recs.map(function(r){ return [ {v:r.date,t:'String'},{v:(r.customer||''),t:'String'},{v:(r.invoiceNumber||''),t:'String'},{v:r.ledger,t:'String'},{v:Number(r.amount||0),t:'Number'},{v:(r.comment||''),t:'String'} ]; });
       var stHeader=['Product','Price (₦)','Qty','Value'];
       var stRows=stock.map(function(it){ return [ {v:it.name,t:'String'},{v:Number(it.price||0),t:'Number'},{v:Number(it.qty||0),t:'Number'},{v:Number(it.value||0),t:'Number'} ]; });
-      var workbook='<?xml version="1.0"?>\n<?mso-application progid="Excel.Sheet"?>\n<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><DocumentProperties xmlns="urn:schemas-microsoft-com:office:office"><Author>Ledger Manager</Author></DocumentProperties>'+sheet('Payments - '+activeLedger, paysHeader, paysRows)+sheet('Receivables - '+activeLedger, recHeader, recRows)+sheet('Stock - '+activeLedger, stHeader, stRows)+'</Workbook>';
+      var workbook='<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><DocumentProperties xmlns="urn:schemas-microsoft-com:office:office"><Author>Ledger Manager</Author></DocumentProperties>'+sheet('Payments - '+activeLedger, paysHeader, paysRows)+sheet('Receivables - '+activeLedger, recHeader, recRows)+sheet('Stock - '+activeLedger, stHeader, stRows)+'</Workbook>';
       var blob=new Blob([workbook],{type:'application/vnd.ms-excel'}); var url=URL.createObjectURL(blob); var a=document.createElement('a'); a.href=url; a.download='ledger_export.xls'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
     });
 
+    // Initial refresh
     populateProducts(); refreshLedgers(); if(ledgerSelects.payment && ledgerSelects.payment.options.length>0) ledgerSelects.payment.selectedIndex=0; if(ledgerSelects.paymentsFilter && ledgerSelects.paymentsFilter.options.length>0) ledgerSelects.paymentsFilter.selectedIndex=0; if(ledgerSelects.recv && ledgerSelects.recv.options.length>0) ledgerSelects.recv.selectedIndex=0; if(ledgerSelects.recvFilter && ledgerSelects.recvFilter.options.length>0) ledgerSelects.recvFilter.selectedIndex=0; if(ledgerSelects.stock && ledgerSelects.stock.options.length>0) ledgerSelects.stock.selectedIndex=0; if(ledgerSelects.dashboard && ledgerSelects.dashboard.options.length>0) ledgerSelects.dashboard.selectedIndex=0; refreshPaymentsTable(); refreshStockTable(); refreshDashboard();
   }
-
   if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', init); else init();
-
   window.addEventListener('error', function(e){ try{ var n=document.createElement('div'); n.style.cssText='position:fixed;bottom:8px;left:8px;right:8px;background:#7f1d1d;color:#fff;padding:8px 10px;border-radius:8px;z-index:9999;font:12px system-ui'; n.textContent='Error: '+(e.error&&e.error.message?e.error.message:(e.message||'Unknown')); document.body.appendChild(n); setTimeout(function(){ if(n&&n.parentNode) n.parentNode.removeChild(n); }, 6000);}catch(_){} }, { once:true });
 })();
