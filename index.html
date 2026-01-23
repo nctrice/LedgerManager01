@@ -153,8 +153,17 @@
           <label>Filter by Ledger
             <select id="recv-filter-ledger"></select>
           </label>
+          <button id="export-recv-csv" class="outline">Export (CSV)</button>
         </div>
         <div id="receivables-table" class="table"></div>
+        <div class="row wrap">
+          <div id="receivables-total" class="pill">Total: ₦0.00</div>
+          <div id="recv-pager" style="margin-left:auto; display:flex; gap:.5rem; align-items:center;">
+            <button id="recv-prev" class="outline">Prev</button>
+            <span id="recv-page-info" class="small">Page 1/1</span>
+            <button id="recv-next" class="outline">Next</button>
+          </div>
+        </div>
       </div>
 
       <div class="card" id="fav-sections">
@@ -235,5 +244,40 @@
 
   <script src="storage.js"></script>
   <script src="app.js"></script>
+  
+  <!-- Edit Receivable Modal -->
+  <div id="edit-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="edit-title">
+    <div class="modal-content">
+      <h3 id="edit-title">Edit Receivable</h3>
+      <div class="row">
+        <label>Ledger
+          <select id="edit-ledger"></select>
+        </label>
+        <label>Invoice date
+          <input id="edit-date" type="date" />
+        </label>
+      </div>
+      <div class="row">
+        <label>Customer name
+          <input id="edit-customer" type="text" />
+        </label>
+        <label>Invoice number
+          <input id="edit-invnum" type="text" />
+        </label>
+        <label>Amount (₦)
+          <input id="edit-amount" type="number" min="0" step="0.01" />
+        </label>
+      </div>
+      <div class="row">
+        <label>Comment
+          <input id="edit-comment" type="text" />
+        </label>
+      </div>
+      <div class="row" style="justify-content:flex-end">
+        <button id="edit-cancel" class="outline">Cancel</button>
+        <button id="edit-save" class="primary">Update</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>

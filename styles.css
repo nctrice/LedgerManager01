@@ -44,4 +44,9 @@ button.danger { background:#3f0b0b; border-color:#7f1d1d; }
 .worth { background: #6b7280; color:#fff; font-size: 1.6rem; font-weight: 800; padding: .8rem 1rem; border-radius: 12px; text-align:center; }
 .app-footer { text-align:center; padding:1rem; color:var(--muted); }
 .small { color: var(--muted); }
+/* Modal */
+.modal { position: fixed; inset: 0; background: rgba(0,0,0,0.6); display:flex; align-items:center; justify-content:center; }
+.modal.hidden { display:none; }
+.modal-content { background: var(--card); border:1px solid #1f2937; border-radius:12px; padding:1rem; width: min(680px, 92vw); }
+.modal-content h3 { margin-top:0; }
 @media (min-width: 800px){ .stats { grid-template-columns: repeat(4, 1fr); } }

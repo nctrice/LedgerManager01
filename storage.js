@@ -92,7 +92,7 @@ const Store = (() => {
       save(state);
     },
     deleteReceivable: (id) => { const i=state.receivables.findIndex(r=>r.id===id); if(i>=0){ state.receivables.splice(i,1); save(state);} },
-    moveReceivableLedger: (id, newLedger) => { const it = state.receivables.find(r=>r.id===id); if(it){ it.ledger=newLedger; save(state);} },
+    updateReceivable: (id, fields) => { const it = state.receivables.find(r=>r.id===id); if(it){ Object.assign(it, fields); save(state);} },
     listReceivables: (ledger=null) => {
       let arr = Array.from(state.receivables);
       if(ledger && ledger !== 'All') arr = arr.filter(r=>r.ledger===ledger);
