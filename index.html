@@ -14,6 +14,7 @@
   <header class="app-header"> 
     <h1>Ledger PWA</h1>
     <nav class="tabs" role="tablist">
+      <!-- Order: Dashboard, Payments, Receivables, Stock -->
       <button class="tab-btn" data-tab="dashboard">Dashboard</button>
       <button class="tab-btn active" data-tab="payments" aria-selected="true">Payments</button>
       <button class="tab-btn" data-tab="receivables">Receivables</button>
@@ -22,8 +23,10 @@
   </header>
 
   <main>
+    <!-- PAYMENTS TAB -->
     <section id="payments" class="tab-panel active" aria-labelledby="Payments">
       <h2>Payments</h2>
+
       <div class="card">
         <h3>Ledgers</h3>
         <div class="row">
@@ -33,37 +36,64 @@
         <small>Ledgers created here will be available across all tabs.</small>
         <div id="ledger-list" class="pill-list"></div>
       </div>
+
       <div class="card">
         <h3>Post a Payment</h3>
         <div class="row">
           <label><input type="radio" name="pay-kind" value="credit"> Credit payment</label>
           <label><input type="radio" name="pay-kind" value="debit"> Debit invoice</label>
         </div>
+
         <div class="row">
-          <label>Ledger<select id="payment-ledger"></select></label>
-          <label>Date<input id="payment-date" type="date" /></label>
+          <label>Ledger
+            <select id="payment-ledger"></select>
+          </label>
+          <label>Date
+            <input id="payment-date" type="date" />
+          </label>
         </div>
+
         <div id="credit-fields" class="hidden">
           <div class="row">
-            <label>Payment name<input id="credit-name" type="text" placeholder="e.g. Bank deposit" /></label>
-            <label>Payment type<select id="credit-type"><option value="Transfer">Transfer</option><option value="Cheque">Cheque</option><option value="Cash">Cash</option></select></label>
-            <label>Amount (₦)<input id="credit-amount" type="number" min="0" step="0.01" /></label>
+            <label>Payment name
+              <input id="credit-name" type="text" placeholder="e.g. Bank deposit" />
+            </label>
+            <label>Payment type
+              <select id="credit-type">
+                <option value="Transfer">Transfer</option>
+                <option value="Cheque">Cheque</option>
+                <option value="Cash">Cash</option>
+              </select>
+            </label>
+            <label>Amount (₦)
+              <input id="credit-amount" type="number" min="0" step="0.01" />
+            </label>
           </div>
           <button id="add-credit-btn" class="primary">Add Credit</button>
         </div>
+
         <div id="debit-fields" class="hidden">
           <div class="row">
-            <label>Invoice type<input id="debit-invoice-type" type="text" placeholder="e.g. Purchase" /></label>
-            <label>Invoice number<input id="debit-invoice-number" type="text" /></label>
-            <label>Amount (₦)<input id="debit-amount" type="number" min="0" step="0.01" /></label>
+            <label>Invoice type
+              <input id="debit-invoice-type" type="text" placeholder="e.g. Purchase" />
+            </label>
+            <label>Invoice number
+              <input id="debit-invoice-number" type="text" />
+            </label>
+            <label>Amount (₦)
+              <input id="debit-amount" type="number" min="0" step="0.01" />
+            </label>
           </div>
           <button id="add-debit-btn" class="primary">Add Debit</button>
         </div>
       </div>
+
       <div class="card">
         <div class="row wrap">
           <h3 style="margin-right:auto">Payment Records</h3>
-          <label>Filter by Ledger<select id="payments-filter-ledger"></select></label>
+          <label>Filter by Ledger
+            <select id="payments-filter-ledger"></select>
+          </label>
           <button id="export-ledger-csv" class="outline">Export ledger statement (CSV)</button>
         </div>
         <div id="payments-summary" class="stats">
@@ -75,24 +105,39 @@
       </div>
     </section>
 
+    <!-- RECEIVABLES TAB -->
     <section id="receivables" class="tab-panel" aria-labelledby="Receivables">
       <h2>Receivables</h2>
+
       <div class="card">
         <h3>Add Receivable</h3>
         <div class="row">
-          <label>Ledger<select id="recv-ledger"></select></label>
-          <label>Invoice date<input id="recv-date" type="date" /></label>
+          <label>Ledger
+            <select id="recv-ledger"></select>
+          </label>
+          <label>Invoice date
+            <input id="recv-date" type="date" />
+          </label>
         </div>
         <div class="row">
-          <label>Customer name<input id="recv-customer" type="text" /></label>
-          <label>Invoice number<input id="recv-invnum" type="text" /></label>
-          <label>Amount (₦)<input id="recv-amount" type="number" min="0" step="0.01" /></label>
+          <label>Customer name
+            <input id="recv-customer" type="text" />
+          </label>
+          <label>Invoice number
+            <input id="recv-invnum" type="text" />
+          </label>
+          <label>Amount (₦)
+            <input id="recv-amount" type="number" min="0" step="0.01" />
+          </label>
         </div>
         <div class="row">
-          <label>Comment<input id="recv-comment" type="text" /></label>
+          <label>Comment
+            <input id="recv-comment" type="text" />
+          </label>
           <button id="add-recv-btn" class="primary" style="align-self:flex-end">Add Receivable</button>
         </div>
       </div>
+
       <div class="card">
         <h3>Favourite Customers (max 5)</h3>
         <div id="fav-customers" class="row wrap"></div>
@@ -101,10 +146,13 @@
           <button id="add-fav-btn" class="outline">Add Favourite</button>
         </div>
       </div>
+
       <div class="card">
         <div class="row wrap">
           <h3 style="margin-right:auto">All Receivables</h3>
-          <label>Filter by Ledger<select id="recv-filter-ledger"></select></label>
+          <label>Filter by Ledger
+            <select id="recv-filter-ledger"></select>
+          </label>
           <button id="export-recv-csv" class="outline">Export (CSV)</button>
         </div>
         <div id="receivables-table" class="table"></div>
@@ -117,24 +165,36 @@
           </div>
         </div>
       </div>
+
       <div class="card" id="fav-sections">
         <h3>Favourite Customers' Receivables</h3>
         <div id="fav-recv-container"></div>
       </div>
     </section>
 
+    <!-- STOCK TAB -->
     <section id="stock" class="tab-panel" aria-labelledby="Stock">
       <h2>Stock</h2>
+
       <div class="card">
         <div class="row wrap">
-          <label>Ledger<select id="stock-ledger"></select></label>
-          <label>Product<select id="stock-product"></select></label>
-          <label>Price (₦)<input id="stock-price" type="number" min="0" step="0.01" /></label>
-          <label>Quantity<input id="stock-qty" type="number" min="0" step="1" /></label>
+          <label>Ledger
+            <select id="stock-ledger"></select>
+          </label>
+          <label>Product
+            <select id="stock-product"></select>
+          </label>
+          <label>Price (₦)
+            <input id="stock-price" type="number" min="0" step="0.01" />
+          </label>
+          <label>Quantity
+            <input id="stock-qty" type="number" min="0" step="1" />
+          </label>
           <button id="add-stock-btn" class="primary">Add/Update</button>
         </div>
         <small>Prices can be changed when necessary. Quantities are per selected ledger.</small>
       </div>
+
       <div class="card">
         <div class="row wrap">
           <h3 style="margin-right:auto">Stock List</h3>
@@ -144,13 +204,17 @@
       </div>
     </section>
 
+    <!-- DASHBOARD TAB -->
     <section id="dashboard" class="tab-panel" aria-labelledby="Dashboard">
       <h2>Dashboard</h2>
       <div class="card">
         <div class="row wrap">
-          <label>Select Ledger<select id="dash-ledger"></select></label>
+          <label>Select Ledger
+            <select id="dash-ledger"></select>
+          </label>
         </div>
       </div>
+
       <div class="card">
         <h3>Ledger Summary</h3>
         <div class="stats">
@@ -160,6 +224,7 @@
           <div class="stat"><div class="label">Stock Value</div><div id="stat-stock" class="value">₦0.00</div></div>
         </div>
       </div>
+
       <div class="card">
         <h3>Business Profit/Loss</h3>
         <div id="business-worth" class="worth">₦0.00</div>
@@ -177,21 +242,36 @@
     <small>Offline-ready PWA • Your data is saved on this device</small>
   </footer>
 
-  <!-- Edit Receivable Modal placed BEFORE scripts so elements exist -->
+  <script src="storage.js"></script>
+  <script src="app.js"></script>
+  
+  <!-- Edit Receivable Modal -->
   <div id="edit-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="edit-title">
     <div class="modal-content">
       <h3 id="edit-title">Edit Receivable</h3>
       <div class="row">
-        <label>Ledger<select id="edit-ledger"></select></label>
-        <label>Invoice date<input id="edit-date" type="date" /></label>
+        <label>Ledger
+          <select id="edit-ledger"></select>
+        </label>
+        <label>Invoice date
+          <input id="edit-date" type="date" />
+        </label>
       </div>
       <div class="row">
-        <label>Customer name<input id="edit-customer" type="text" /></label>
-        <label>Invoice number<input id="edit-invnum" type="text" /></label>
-        <label>Amount (₦)<input id="edit-amount" type="number" min="0" step="0.01" /></label>
+        <label>Customer name
+          <input id="edit-customer" type="text" />
+        </label>
+        <label>Invoice number
+          <input id="edit-invnum" type="text" />
+        </label>
+        <label>Amount (₦)
+          <input id="edit-amount" type="number" min="0" step="0.01" />
+        </label>
       </div>
       <div class="row">
-        <label>Comment<input id="edit-comment" type="text" /></label>
+        <label>Comment
+          <input id="edit-comment" type="text" />
+        </label>
       </div>
       <div class="row" style="justify-content:flex-end">
         <button id="edit-cancel" class="outline">Cancel</button>
@@ -199,8 +279,5 @@
       </div>
     </div>
   </div>
-
-  <script src="storage.js"></script>
-  <script src="app.js"></script>
 </body>
 </html>
