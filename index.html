@@ -14,10 +14,10 @@
   <header class="app-header"> 
     <h1>Ledger Manager</h1>
     <nav class="tabs" role="tablist">
-      <button class="tab-btn" data-tab="dashboard">Dashboard</button>
-      <button class="tab-btn active" data-tab="payments" aria-selected="true">Payments</button>
-      <button class="tab-btn" data-tab="receivables">Receivables</button>
-      <button class="tab-btn" data-tab="stock">Stock</button>
+      <button class="tab-btn" data-tab="dashboard" type="button">Dashboard</button>
+      <button class="tab-btn active" data-tab="payments" aria-selected="true" type="button">Payments</button>
+      <button class="tab-btn" data-tab="receivables" type="button">Receivables</button>
+      <button class="tab-btn" data-tab="stock" type="button">Stock</button>
     </nav>
   </header>
 
@@ -29,7 +29,7 @@
         <h3>Ledgers</h3>
         <div class="row">
           <input id="new-ledger-name" type="text" placeholder="New ledger name" />
-          <button id="add-ledger-btn" class="primary">Add Ledger</button>
+          <button id="add-ledger-btn" class="primary" type="button">Add Ledger</button>
         </div>
         <small>Ledgers created here will be available across all tabs.</small>
         <div id="ledger-list" class="pill-list"></div>
@@ -38,7 +38,7 @@
       <div class="card">
         <h3>Post a Payment</h3>
         <div class="row">
-          <label><input type="radio" name="pay-kind" value="credit"> Credit payment</label>
+          <label><input type="radio" name="pay-kind" value="credit" checked> Credit payment</label>
           <label><input type="radio" name="pay-kind" value="debit"> Debit invoice</label>
         </div>
 
@@ -51,7 +51,7 @@
           </label>
         </div>
 
-        <div id="credit-fields" class="hidden">
+        <div id="credit-fields">
           <div class="row">
             <label>Payment name
               <input id="credit-name" type="text" placeholder="e.g. Bank deposit" />
@@ -67,7 +67,7 @@
               <input id="credit-amount" type="number" min="0" step="0.01" />
             </label>
           </div>
-          <button id="add-credit-btn" class="primary">Add Credit</button>
+          <button id="add-credit-btn" class="primary" type="button">Add Credit</button>
         </div>
 
         <div id="debit-fields" class="hidden">
@@ -82,7 +82,7 @@
               <input id="debit-amount" type="number" min="0" step="0.01" />
             </label>
           </div>
-          <button id="add-debit-btn" class="primary">Add Debit</button>
+          <button id="add-debit-btn" class="primary" type="button">Add Debit</button>
         </div>
       </div>
 
@@ -92,7 +92,7 @@
           <label>Filter by Ledger
             <select id="payments-filter-ledger"></select>
           </label>
-          <button id="export-ledger-csv" class="outline">Export ledger statement (CSV)</button>
+          <button id="export-ledger-csv" class="outline" type="button">Export ledger statement (CSV)</button>
         </div>
         <div id="payments-summary" class="stats">
           <div class="stat"><div class="label">Total Credits</div><div id="payments-total-credits" class="value">₦0.00</div></div>
@@ -132,7 +132,7 @@
           <label>Comment
             <input id="recv-comment" type="text" />
           </label>
-          <button id="add-recv-btn" class="primary" style="align-self:flex-end">Add Receivable</button>
+          <button id="add-recv-btn" class="primary" style="align-self:flex-end" type="button">Add Receivable</button>
         </div>
       </div>
 
@@ -141,7 +141,7 @@
         <div id="fav-customers" class="row wrap"></div>
         <div class="row">
           <input id="new-fav-name" type="text" placeholder="Add favourite customer" />
-          <button id="add-fav-btn" class="outline">Add Favourite</button>
+          <button id="add-fav-btn" class="outline" type="button">Add Favourite</button>
         </div>
       </div>
 
@@ -151,15 +151,15 @@
           <label>Filter by Ledger
             <select id="recv-filter-ledger"></select>
           </label>
-          <button id="export-recv-csv" class="outline">Export (CSV)</button>
+          <button id="export-recv-csv" class="outline" type="button">Export (CSV)</button>
         </div>
         <div id="receivables-table" class="table"></div>
         <div class="row wrap">
           <div id="receivables-total" class="pill">Total: ₦0.00</div>
           <div id="recv-pager" style="margin-left:auto; display:flex; gap:.5rem; align-items:center;">
-            <button id="recv-prev" class="outline">Prev</button>
+            <button id="recv-prev" class="outline" type="button">Prev</button>
             <span id="recv-page-info" class="small">Page 1/1</span>
-            <button id="recv-next" class="outline">Next</button>
+            <button id="recv-next" class="outline" type="button">Next</button>
           </div>
         </div>
       </div>
@@ -188,7 +188,7 @@
           <label>Quantity
             <input id="stock-qty" type="number" min="0" step="1" />
           </label>
-          <button id="add-stock-btn" class="primary">Add/Update</button>
+          <button id="add-stock-btn" class="primary" type="button">Add/Update</button>
         </div>
         <small>Prices can be changed when necessary. Quantities are per selected ledger.</small>
       </div>
@@ -238,11 +238,11 @@
         <h3>Data Management</h3>
         <p class="small">Backup/restore JSON, universal CSV import/export, and Excel (multi‑tab) export.</p>
         <div class="row wrap">
-          <button id="btn-export-backup" class="outline">Export Backup (JSON)</button>
-          <button id="btn-import-backup" class="outline">Import Backup (JSON)</button>
-          <button id="btn-export-all-csv" class="outline">Export CSV (All)</button>
-          <button id="btn-import-all-csv" class="outline">Import CSV (All)</button>
-          <button id="btn-export-excel" class="outline">Export Excel (multi‑tab)</button>
+          <button id="btn-export-backup" class="outline" type="button">Export Backup (JSON)</button>
+          <button id="btn-import-backup" class="outline" type="button">Import Backup (JSON)</button>
+          <button id="btn-export-all-csv" class="outline" type="button">Export CSV (All)</button>
+          <button id="btn-import-all-csv" class="outline" type="button">Import CSV (All)</button>
+          <button id="btn-export-excel" class="outline" type="button">Export Excel (multi‑tab)</button>
         </div>
         <input id="file-import-backup" type="file" accept="application/json,.json" class="hidden" />
         <input id="file-import-csv" type="file" accept="text/csv,.csv" class="hidden" />
@@ -272,13 +272,13 @@
         <label>Comment<input id="edit-comment" type="text" /></label>
       </div>
       <div class="row" style="justify-content:flex-end">
-        <button id="edit-cancel" class="outline">Cancel</button>
-        <button id="edit-save" class="primary">Update</button>
+        <button id="edit-cancel" class="outline" type="button">Cancel</button>
+        <button id="edit-save" class="primary" type="button">Update</button>
       </div>
     </div>
   </div>
 
-  <script src="storage.js"></script>
-  <script src="app.js"></script>
+  <script src="storage.js" defer></script>
+  <script src="app.js" defer></script>
 </body>
 </html>

@@ -40,4 +40,5 @@ var Store = (function(){ var KEY='ledgerpwa.v1';
     clearTransactionsAndStock: function(){ state.payments=[]; state.receivables=[]; for(var i=0;i<state.ledgers.length;i++){ var l=state.ledgers[i]; ensureLedgerStock(l); var prods=state.stock[l].products||{}; for(var k in prods){ if(prods.hasOwnProperty(k)) prods[k].qty=0; } state.stock[l].products=prods; } save(state); }
   };
 })();
-function naira(n){ return new Intl.NumberFormat('en-NG',{style:'currency',currency:'NGN',minimumFractionDigits:2}).format(Number(n||0)); }
+// Robust currency formatter with fallback for older browsers
+function naira(n){ try{ return new Intl.NumberFormat('en-NG',{style:'currency',currency:'NGN',minimumFractionDigits:2}).format(Number(n||0)); } catch(e){ var v = Number(n||0); var parts = isFinite(v)? v.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0.00'; return '₦'+parts; }}
