@@ -1,5 +1,5 @@
 
-const CACHE_NAME='ledger-pwa-cache-v13';
+const CACHE_NAME='ledger-pwa-cache-v14';
 const ASSETS=['./','./index.html','./styles.css','./app.js','./storage.js','./manifest.webmanifest','./icons/icon-192.png','./icons/icon-512.png','./icons/apple-touch-icon.png'];
 self.addEventListener('install',e=>{ e.waitUntil(caches.open(CACHE_NAME).then(c=>c.addAll(ASSETS))); });
 self.addEventListener('activate',e=>{ e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k))))); });

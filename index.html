@@ -236,13 +236,14 @@
 
       <div class="card" id="data-mgmt">
         <h3>Data Management</h3>
-        <p class="small">Backup/restore JSON, universal CSV import/export, and Excel (multi‑tab) export.</p>
+        <p class="small">Backup/restore JSON, universal CSV import/export, Excel (multi‑tab) export, and an emergency toggle to disable offline cache.</p>
         <div class="row wrap">
           <button id="btn-export-backup" class="outline" type="button">Export Backup (JSON)</button>
           <button id="btn-import-backup" class="outline" type="button">Import Backup (JSON)</button>
           <button id="btn-export-all-csv" class="outline" type="button">Export CSV (All)</button>
           <button id="btn-import-all-csv" class="outline" type="button">Import CSV (All)</button>
           <button id="btn-export-excel" class="outline" type="button">Export Excel (multi‑tab)</button>
+          <button id="btn-disable-sw" class="danger" type="button" title="If updates don't show, click this to clear offline cache and reload">Disable Offline Cache</button>
         </div>
         <input id="file-import-backup" type="file" accept="application/json,.json" class="hidden" />
         <input id="file-import-csv" type="file" accept="text/csv,.csv" class="hidden" />
