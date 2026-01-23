@@ -78,9 +78,7 @@ const Store = (() => {
       return arr;
     },
     paymentsTotals: (ledger) => {
-      if(ledger==='All' || !ledger){
-        let credits=0, debits=0; for(const p of state.payments){ if(p.type==='credit') credits+=Number(p.amount||0); else debits+=Number(p.amount||0);} return {credits,debits};
-      }
+      if(ledger==='All' || !ledger){ let credits=0, debits=0; for(const p of state.payments){ if(p.type==='credit') credits+=Number(p.amount||0); else debits+=Number(p.amount||0);} return {credits,debits}; }
       const arr = state.payments.filter(p=>p.ledger===ledger);
       let credits=0, debits=0; for(const p of arr){ if(p.type==='credit') credits+=Number(p.amount||0); else debits+=Number(p.amount||0); }
       return { credits, debits };
@@ -105,13 +103,7 @@ const Store = (() => {
 
     // FAVOURITES
     getFavourites: ()=> Array.from(state.favoriteCustomers||[]),
-    addFavourite: (name)=>{
-      const nm = String(name||'').trim();
-      if(!nm) return { ok:false, msg:'Enter a name' };
-      if(state.favoriteCustomers.includes(nm)) return { ok:false, msg:'Already in favourites' };
-      if(state.favoriteCustomers.length>=5) return { ok:false, msg:'Maximum 5 favourites' };
-      state.favoriteCustomers.push(nm); save(state); return { ok:true };
-    },
+    addFavourite: (name)=>{ const nm = String(name||'').trim(); if(!nm) return { ok:false, msg:'Enter a name' }; if(state.favoriteCustomers.includes(nm)) return { ok:false, msg:'Already in favourites' }; if(state.favoriteCustomers.length>=5) return { ok:false, msg:'Maximum 5 favourites' }; state.favoriteCustomers.push(nm); save(state); return { ok:true }; },
     removeFavourite: (name)=>{ state.favoriteCustomers = state.favoriteCustomers.filter(n=>n!==name); save(state); },
 
     // STOCK (per ledger)
@@ -121,13 +113,7 @@ const Store = (() => {
       'Metformin Tablet': 800, 'Vitamin C Syrup': 300, 'Gentamicin Inj': 5995, 'Diclofenac Inj': 4550,
       'Artemether Inj': 4350, 'M&B Isopropyl Alcohol': 950,
     }),
-    setStock: (ledger, product, price, qty) => {
-      ensureLedgerStock(ledger);
-      const p = state.stock[ledger].products[product] || { price: 0, qty: 0 };
-      if(price!=null && !Number.isNaN(Number(price))) p.price = Number(price);
-      if(qty!=null && !Number.isNaN(Number(qty))) p.qty = Number(qty);
-      state.stock[ledger].products[product] = p; save(state);
-    },
+    setStock: (ledger, product, price, qty) => { ensureLedgerStock(ledger); const p = state.stock[ledger].products[product] || { price: 0, qty: 0 }; if(price!=null && !Number.isNaN(Number(price))) p.price = Number(price); if(qty!=null && !Number.isNaN(Number(qty))) p.qty = Number(qty); state.stock[ledger].products[product] = p; save(state); },
     getStockForLedger: (ledger) => { ensureLedgerStock(ledger); const items = state.stock[ledger].products||{}; return Object.entries(items).map(([name,v])=>({ name, price:Number(v.price||0), qty:Number(v.qty||0), value:Number(v.price||0)*Number(v.qty||0) })); },
     stockTotalValue: (ledger) => (Store.getStockForLedger(ledger)||[]).reduce((s,it)=>s+it.value,0),
   };

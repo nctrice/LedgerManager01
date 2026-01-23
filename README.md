@@ -1,7 +1,6 @@
-# Ledger PWA (Payments Totals in Payments Tab)
+# Ledger PWA (Dashboard Profit/Loss)
 
-- Tab order: **Dashboard, Payments, Receivables, Stock**
-- On launch/refresh: **Payments** tab opens.
-- **New**: Payments tab now shows **Total Credits**, **Total Debits**, and **Balance (Debit − Credit)** for the selected ledger (or for **All** if you filter by All). Values update on add/delete and on filter change.
-
-Re-deploy the same way via GitHub Pages.
+- Dashboard label changed to **Business Profit/Loss**
+- New formula: **(Total Credits + Total Receivables + Total Stock Value) − Total Debits**
+- Colour: **Green** if > 0, **Red** if < 0, **Grey** if = 0 (text colour on grey badge)
+- Still launches on **Payments** tab by default

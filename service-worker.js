@@ -1,5 +1,5 @@
 
-const CACHE_NAME = 'ledger-pwa-cache-v3';
+const CACHE_NAME = 'ledger-pwa-cache-v4';
 const ASSETS = [
   './',
   './index.html',

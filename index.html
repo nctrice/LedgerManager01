@@ -96,14 +96,11 @@
           </label>
           <button id="export-ledger-csv" class="outline">Export ledger statement (CSV)</button>
         </div>
-
-        <!-- NEW: Totals summary for selected ledger -->
         <div id="payments-summary" class="stats">
           <div class="stat"><div class="label">Total Credits</div><div id="payments-total-credits" class="value">₦0.00</div></div>
           <div class="stat"><div class="label">Total Debits</div><div id="payments-total-debits" class="value">₦0.00</div></div>
           <div class="stat"><div class="label">Balance (Debit − Credit)</div><div id="payments-balance" class="value">₦0.00</div></div>
         </div>
-
         <div id="payments-table" class="table"></div>
       </div>
     </section>
@@ -220,9 +217,9 @@
       </div>
 
       <div class="card">
-        <h3>Business Worth</h3>
+        <h3>Business Profit/Loss</h3>
         <div id="business-worth" class="worth">₦0.00</div>
-        <p class="help">Business worth = Total Debits − (Total Credits + Total Receivables + Total Stock Value)</p>
+        <p class="help">Business Profit/Loss = (Total Credits + Total Receivables + Total Stock Value) − Total Debits</p>
         <ul>
           <li><span class="pill green"></span> Green if &gt; 0</li>
           <li><span class="pill red"></span> Red if &lt; 0</li>

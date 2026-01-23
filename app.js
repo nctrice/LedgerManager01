@@ -119,7 +119,7 @@ exportBtn.addEventListener('click', ()=>{
     else lines.push([r.date,'Debit',(r.invoiceType||''),(r.invoiceNumber||''),r.ledger,r.amount].map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(','));
   }
   const blob = new Blob([lines.join('\n')], { type:'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download=`ledger_${ledger}_statement.csv`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+  const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `ledger_${ledger}_statement.csv`; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
 });
 
 // Receivables
@@ -206,8 +206,25 @@ function refreshStockTable(){ const ledger = ledgerSelects.stock.value; const it
 const addStockBtn = document.getElementById('add-stock-btn'); addStockBtn.addEventListener('click', ()=>{ const ledger = ledgerSelects.stock.value; const product = productSelect.value; const price = Number(document.getElementById('stock-price').value); const qty = Number(document.getElementById('stock-qty').value); if(!ledger){ alert('Select a ledger'); return; } if(!product){ alert('Select a product'); return; } Store.setStock(ledger, product, price, qty); document.getElementById('stock-qty').value=''; refreshStockTable(); });
 
 // Dashboard
-function refreshDashboard(){ const ledger = ledgerSelects.dashboard.value || Store.getLedgers()[0]; const { credits, debits } = Store.paymentsTotals(ledger); const recv = Store.receivablesTotal(ledger); const stock = Store.stockTotalValue(ledger); const worth = debits - (credits + recv + stock); document.getElementById('stat-debits').textContent = naira(debits); document.getElementById('stat-credits').textContent = naira(credits); document.getElementById('stat-recv').textContent = naira(recv); document.getElementById('stat-stock').textContent = naira(stock); const w = document.getElementById('business-worth'); w.textContent = naira(worth); w.style.background = worth>0 ? '#065f46' : worth<0 ? '#7f1d1d' : '#6b7280'; }
-ledgerSelects.dashboard.addEventListener('change', refreshDashboard); ledgerSelects.stock.addEventListener('change', refreshStockTable);
+function refreshDashboard(){
+  const ledger = ledgerSelects.dashboard.value || Store.getLedgers()[0];
+  const { credits, debits } = Store.paymentsTotals(ledger);
+  const recv = Store.receivablesTotal(ledger);
+  const stock = Store.stockTotalValue(ledger);
+  const profit = (credits + recv + stock) - debits;
+  document.getElementById('stat-debits').textContent = naira(debits);
+  document.getElementById('stat-credits').textContent = naira(credits);
+  document.getElementById('stat-recv').textContent = naira(recv);
+  document.getElementById('stat-stock').textContent = naira(stock);
+  const w = document.getElementById('business-worth');
+  w.textContent = naira(profit);
+  // Keep grey background; color of text shows Profit/Loss direction
+  w.style.background = '#6b7280';
+  w.style.color = profit>0 ? '#22c55e' : profit<0 ? '#ef4444' : '#ffffff';
+}
+
+ledgerSelects.dashboard.addEventListener('change', refreshDashboard);
+ledgerSelects.stock.addEventListener('change', refreshStockTable);
 
 populateProducts(); refreshLedgers();
 if(ledgerSelects.payment.options.length>0) ledgerSelects.payment.selectedIndex = 0;
