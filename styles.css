@@ -19,10 +19,7 @@ button.primary{background:#065f46;border-color:#0f766e} button.outline{backgroun
 .pill-list{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.5rem} .pill{background:var(--pill);border:1px solid #1f2937;padding:.25rem .5rem;border-radius:999px;font-size:.85rem}
 .pill.red{background:#3b0a0a;border-color:#7f1d1d} .pill.green{background:#063e2a;border-color:#0f5132}
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin:.5rem 0} .stat{background:#0b1220;border:1px solid #1f2937;border-radius:10px;padding:.75rem} .stat .label{color:var(--muted);font-size:.85rem} .stat .value{font-weight:700;font-size:1.1rem;margin-top:.25rem}
-.worth{background:#6b7280;color:#fff;font-size:1.6rem;font-weight:800;padding:.8rem 1rem;border-radius:12px;text-align:center}
+.worth{background:#6b7280;color:#fff;font-size:1.6rem;font-weight:800;padding:1rem;border-radius:12px;text-align:center}
 .app-footer{text-align:center;padding:1rem;color:var(--muted)} .small{color:var(--muted)}
-/* Modal */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center}
-.modal.hidden{display:none}
-.modal-content{background:var(--card);border:1px solid #1f2937;border-radius:12px;padding:1rem;width:min(680px,92vw)} .modal-content h3{margin-top:0}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center} .modal.hidden{display:none} .modal-content{background:var(--card);border:1px solid #1f2937;border-radius:12px;padding:1rem;width:min(680px,92vw)} .modal-content h3{margin-top:0}
 @media(min-width:800px){.stats{grid-template-columns:repeat(4,1fr)}}
